@@ -1,5 +1,5 @@
 #!/bin/bash
-
+echo hola
 git_hash=$(git describe --long --dirty --always)
 git_date=$(git show -s --format=%ci)
 

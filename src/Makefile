@@ -3,8 +3,7 @@ IDIR =../include
 BDIR =../bin
 ODIR =./obj
 MDIR =./mod
-SDIR =.
-libpath = -ldislin -I/usr/local/dislin
+libpath = -ldislin 
 
 # Compiler/Linker settings
 FC = gfortran -I$(IDIR) -J$(MDIR)  # -Wno-argument-mismatch
@@ -37,8 +36,16 @@ default: $(MODOBJ) $(OBJ)
 	@mkdir -p $(BDIR)
 	$(FC) $(MODOBJ) $(OBJ) -o $(BDIR)/$(PROGRAM) $(libpath)
 
+version.f90:
+	@./get_git_version.sh
+	
 # Compiler steps for all objects
 $(ODIR)/%.o: %.F90
+	@mkdir -p $(MDIR)
+	$(dir_guard)
+	$(FC) $(FCFLAGS) -o $@ $^ 
+
+$(ODIR)/version.o: version.f90
 	@mkdir -p $(MDIR)
 	$(dir_guard)
 	$(FC) $(FCFLAGS) -o $@ $^ 
@@ -59,12 +66,12 @@ $(ODIR)/$(PRGOBJ) : $(MODOBJ)
 debug: 
 
 	@echo "SRCF90  = $(SRCF90)"
+	@echo "SRCMOD  = $(SRCMOD)"
 	@echo "OBJ     = $(OBJ)"
-	@echo "SRCMOD  = $(MOD)"
 	@echo "MODOBJ  = $(MODOBJ)"
+	@echo "MODMOD  = $(MODMOD)"
 	@echo "PROGRAM = $(PROGRAM)"
 	@echo "PRGOBJ  = $(PRGOBJ)"
-	@echo "MODMOD  = $(MODMOD)"
 #	DEBUG=1 make clean $(BDIR)/$(PROGRAM)
 
 install:
